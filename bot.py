@@ -12,9 +12,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-pro')
 
-user_states = {}  # track user mode (e.g., Gemini)
+user_states = {} #track user mode(eg.Gemini,about,help)
 
-# /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton(" Chat with Gemini", callback_data="gemini")],
@@ -23,8 +22,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(" Welcome! Choose an option:", reply_markup=reply_markup)
-
-# Inline button handler
+    
 async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -41,12 +39,10 @@ async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "help":
         await query.edit_message_text("Use /start to go back to menu.\nUse /back to exit Gemini mode.")
 
-# /back command
 async def back(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_states.pop(update.message.from_user.id, None)
     await start(update, context)
-
-# Gemini chat
+    
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     if user_states.get(user_id) == "gemini":
@@ -56,7 +52,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             await update.message.reply_text(" Error: " + str(e))
 
-# Main
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -65,7 +60,7 @@ def main():
     app.add_handler(CallbackQueryHandler(handle_buttons))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("🤖 Bot is running...")
+    print(" Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
