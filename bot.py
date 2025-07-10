@@ -11,7 +11,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-pro')
 
-user_states = {} #track user mode(eg.Gemini,about,help)
+user_states = {} #track mode(eg.Gemini,about,help)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
